@@ -29,5 +29,4 @@ public class SourceController {
         sourceService.addNewsSource(addSourceRequest);
         return ResponseEntity.ok("Source added");
     }
-
 }

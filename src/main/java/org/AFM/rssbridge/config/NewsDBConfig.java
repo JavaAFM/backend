@@ -62,7 +62,8 @@ public class NewsDBConfig {
     }
 
     @Bean(name = "newsTransactionManager")
-    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+    public PlatformTransactionManager transactionManager(
+            @Qualifier("newsEntityManagerFactory") EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 }
