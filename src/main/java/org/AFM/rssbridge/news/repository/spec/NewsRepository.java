@@ -28,4 +28,6 @@ public interface NewsRepository extends JpaRepository<News, Long>, JpaSpecificat
     Page<News> getLastNewsOfSource(@Param("source") String source, Pageable pageable);
     Optional<News> getNewsById(Long id);
 
+    Optional<News> getNewsByTitle(String title);
+
 }

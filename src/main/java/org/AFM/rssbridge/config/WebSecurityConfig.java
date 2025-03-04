@@ -1,7 +1,7 @@
 package org.AFM.rssbridge.config;
 
 
-import org.AFM.rssbridge.user.service.RSSUserDetailsServiceImpl;
+import org.AFM.rssbridge.user.service.impl.RSSUserDetailsServiceImpl;
 import org.AFM.rssbridge.uitl.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -47,9 +47,10 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/signup", "/allSources", "/allMainTags", "/filterParams").permitAll()
-                        .requestMatchers("/allUsers", "/scrap").hasAuthority("admin")
-                        .requestMatchers("/allNews", "/filter","/getNewsBySource", "/predict", "/allPredictedAnswers", "/addSource").hasAnyAuthority("user", "admin")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/allUsers", "/decision", "/allRequests").hasAuthority("admin")
+                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/allNews", "/filter","/getNewsBySource", "/predict", "/allPredictedAnswers", "/addRequest").hasAnyAuthority("user", "admin")
+                        .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)
@@ -96,6 +97,8 @@ public class WebSecurityConfig {
         configuration.addAllowedOrigin("http://localhost:3000");
         configuration.addAllowedOrigin("http://127.0.0.1:3000");
         configuration.addAllowedOrigin("http://192.168.8.42:3000");
+        configuration.addAllowedOrigin("http://192.168.30.153:3000");
+
 
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");

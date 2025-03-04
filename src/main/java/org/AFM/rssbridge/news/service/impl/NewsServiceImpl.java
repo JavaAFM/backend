@@ -17,7 +17,6 @@ import org.AFM.rssbridge.news.service.NewsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,7 +51,7 @@ public class NewsServiceImpl implements NewsService {
         FilterResponse response = new FilterResponse();
         Page<News> filteredNews;
 
-        if (filterRequest.isNeg() || tagRequest.getTag() != null || tagRequest.is_specific()) {
+        if (filterRequest.isNeg() || filterRequest.isPos() || tagRequest.getTag() != null || tagRequest.is_specific()) {
             if (tagRequest.getTag() == null) {
                 tagRequest.setTag("");
             }
@@ -93,14 +92,37 @@ public class NewsServiceImpl implements NewsService {
                         percentageScore.setOverall(totalCount);
                         percentageScore.setTag(tagRequest.getTag());
                         response.setPercentageScore(percentageScore);
-                    } else {
+                    } else if (filterRequest.isPos()){
+                        filterRequest.setPos(false);
                         LOGGER.info("Processing positive predictions...");
                         List<Long> predictedNewsIds = Arrays.stream(documentScores)
-                                .filter(docScore -> !docScore.is_negative())
+                                .filter(DocumentScore::is_positive)
                                 .map(DocumentScore::getId)
                                 .toList();
                         List<News> predictedNews = newsRepository.findAllById(predictedNewsIds);
                         LOGGER.info("Found {} predicted (positive) news items", predictedNews.size());
+
+                        response.setNewsWithScores(predictedNews, List.of(documentScores), pageable);
+                        long negativeCount = predictedNews.size();
+                        long totalCount = documentScores.length;
+                        double negativePercentage = (totalCount > 0) ? (negativeCount / (double) totalCount) * 100 : 0;
+                        double positivePercentage = 100 - negativePercentage;
+                        PercentageScore percentageScore = new PercentageScore();
+                        percentageScore.setNegative(negativePercentage);
+                        percentageScore.setPositive(positivePercentage);
+                        percentageScore.setOverall(totalCount);
+                        percentageScore.setTag(tagRequest.getTag());
+                        response.setPercentageScore(percentageScore);
+                    }
+                    else{
+                        filterRequest.setPos(false);
+                        filterRequest.setNeg(false);
+                        LOGGER.info("Processing just predictions...");
+                        List<Long> predictedNewsIds = Arrays.stream(documentScores)
+                                .map(DocumentScore::getId)
+                                .toList();
+                        List<News> predictedNews = newsRepository.findAllById(predictedNewsIds);
+                        LOGGER.info("Found {} predicted news items", predictedNews.size());
 
                         response.setNewsWithScores(predictedNews, List.of(documentScores), pageable);
                         long negativeCount = predictedNews.size();
@@ -148,6 +170,65 @@ public class NewsServiceImpl implements NewsService {
                     percentageScore.setTag(tagRequest.getTag());
                     response.setPercentageScore(percentageScore);
                 }
+            }else if(filterRequest.isPos()){
+                LOGGER.info("Processing solely positive filtering request...");
+                TagRequest predictionRequest = new TagRequest();
+                predictionRequest.setTag(tagRequest.getTag());
+                predictionRequest.set_specific(tagRequest.is_specific());
+                ResponseEntity<DocumentScore[]> modelResponse = restTemplate.postForEntity(fastApiUrl, predictionRequest, DocumentScore[].class);
+                documentScores = modelResponse.getBody();
+                int scoreCount = documentScores != null ? documentScores.length : 0;
+                LOGGER.info("Received {} document scores for positive filtering", scoreCount);
+
+                if (documentScores != null && documentScores.length > 0) {
+                    List<Long> positiveNewsIds = Arrays.stream(documentScores)
+                            .filter(DocumentScore::is_positive)
+                            .map(DocumentScore::getId)
+                            .toList();
+                    List<News> positiveNews = newsRepository.findAllById(positiveNewsIds);
+                    LOGGER.info("Found {} positive news items", positiveNews.size());
+                    response.setNewsWithScores(positiveNews, List.of(documentScores), pageable);
+
+                    long negativeCount = positiveNews.size();
+                    long totalCount = documentScores.length;
+                    double negativePercentage = (totalCount > 0) ? (negativeCount / (double) totalCount) * 100 : 0;
+                    double positivePercentage = 100 - negativePercentage;
+                    PercentageScore percentageScore = new PercentageScore();
+                    percentageScore.setNegative(negativePercentage);
+                    percentageScore.setPositive(positivePercentage);
+                    percentageScore.setOverall(totalCount);
+                    percentageScore.setTag(tagRequest.getTag());
+                    response.setPercentageScore(percentageScore);
+                }
+            }else {
+                LOGGER.info("Processing solely filtering request...");
+                TagRequest predictionRequest = new TagRequest();
+                predictionRequest.setTag(tagRequest.getTag());
+                predictionRequest.set_specific(tagRequest.is_specific());
+                ResponseEntity<DocumentScore[]> modelResponse = restTemplate.postForEntity(fastApiUrl, predictionRequest, DocumentScore[].class);
+                documentScores = modelResponse.getBody();
+                int scoreCount = documentScores != null ? documentScores.length : 0;
+                LOGGER.info("Received {} document scores for filtering", scoreCount);
+
+                if (documentScores != null && documentScores.length > 0) {
+                    List<Long> positiveNewsIds = Arrays.stream(documentScores)
+                            .map(DocumentScore::getId)
+                            .toList();
+                    List<News> positiveNews = newsRepository.findAllById(positiveNewsIds);
+                    LOGGER.info("Found {} news items", positiveNews.size());
+                    response.setNewsWithScores(positiveNews, List.of(documentScores), pageable);
+
+                    long negativeCount = positiveNews.size();
+                    long totalCount = documentScores.length;
+                    double negativePercentage = (totalCount > 0) ? (negativeCount / (double) totalCount) * 100 : 0;
+                    double positivePercentage = 100 - negativePercentage;
+                    PercentageScore percentageScore = new PercentageScore();
+                    percentageScore.setNegative(negativePercentage);
+                    percentageScore.setPositive(positivePercentage);
+                    percentageScore.setOverall(totalCount);
+                    percentageScore.setTag(tagRequest.getTag());
+                    response.setPercentageScore(percentageScore);
+                }
             }
 
             LOGGER.info("Filtering news using model response...");
@@ -158,12 +239,10 @@ public class NewsServiceImpl implements NewsService {
             LOGGER.info("No prediction tag provided; applying direct filtering...");
             if ("allSources".equals(filterRequest.getSource_name())) {
                 LOGGER.info("Fetching last news from all sources...");
-                List<News> lastNews = newsRepository.getLastNews(pageable).getContent();
-                filteredNews = newsRepository.filterNews(pageable, filterRequest, lastNews);
             } else {
                 LOGGER.info("Filtering news for source: {}", filterRequest.getSource_name());
-                filteredNews = newsRepository.findAll(NewsSpecification.filterByCriteria(filterRequest), pageable);
             }
+            filteredNews = newsRepository.findAll(NewsSpecification.filterByCriteria(filterRequest), pageable);
             response.setNewsWithScores(filteredNews.getContent(), null, pageable);
         }
         LOGGER.info("getAllNewsFromSource completed; returning {} news items", response.getOnlyNews().size());
@@ -237,5 +316,10 @@ public class NewsServiceImpl implements NewsService {
             }
         }
         return selectedNews;
+    }
+
+    @Override
+    public News findByTitle(String title) throws NotFoundException {
+        return newsRepository.getNewsByTitle(title).orElseThrow(() -> new NotFoundException("News not found.."));
     }
 }

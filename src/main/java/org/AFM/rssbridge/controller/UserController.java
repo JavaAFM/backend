@@ -3,10 +3,12 @@ package org.AFM.rssbridge.controller;
 import lombok.AllArgsConstructor;
 import org.AFM.rssbridge.dto.response.FilterParams;
 import org.AFM.rssbridge.news.model.NewsTag;
+import org.AFM.rssbridge.user.model.SourceRequest;
 import org.AFM.rssbridge.user.model.User;
 import org.AFM.rssbridge.news.service.NewsTagService;
 import org.AFM.rssbridge.user.service.RSSUserDetailService;
 import org.AFM.rssbridge.news.service.SourceService;
+import org.AFM.rssbridge.user.service.RequestService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,6 +17,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 
 @RestController
@@ -25,6 +29,7 @@ public class UserController {
     private final SourceService sourceService;
     private final NewsTagService newsTagService;
 
+    private final RequestService requestService;
     @GetMapping("/allUsers")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Page<User>> getAllUsers(
@@ -46,5 +51,13 @@ public class UserController {
         return ResponseEntity.ok(filterParams);
     }
 
+
+    @GetMapping("/myRequests")
+    private ResponseEntity<List<SourceRequest>> userRequests(
+            @RequestParam String iin
+    ){
+        List<SourceRequest> requests = requestService.getAllRequestsFromUser(iin);
+        return ResponseEntity.ok(requests);
+    }
 }
 

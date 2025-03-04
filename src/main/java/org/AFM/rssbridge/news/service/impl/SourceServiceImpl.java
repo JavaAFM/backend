@@ -4,7 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.AFM.rssbridge.dto.request.AddSourceRequest;
+import org.AFM.rssbridge.user.model.SourceRequest;
 import org.AFM.rssbridge.dto.response.SourceDto;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.mapper.SourceMapper;
@@ -34,7 +34,7 @@ public class SourceServiceImpl implements SourceService {
     private final NewsRepository newsRepository;
     private SourceMapper sourceMapper;
 
-    @PersistenceContext(unitName = "newsDB")  // Ensure this matches `persistenceUnit("newsDB")`
+    @PersistenceContext(unitName = "newsDB")
     private EntityManager entityManager;
 
     @Qualifier("newsTransactionManager")
@@ -72,14 +72,14 @@ public class SourceServiceImpl implements SourceService {
     }
 
     @Override
-    @Transactional("newsTransactionManager") // Make sure it's applied
-    public void addNewsSource(AddSourceRequest addSourceRequest) {
+    @Transactional("newsTransactionManager")
+    public void addNewsSource(SourceRequest sourceRequest) {
         log.info("ADDING NEW SOURCE");
 
         Source source = new Source();
-        source.setLink(addSourceRequest.getLink());
-        source.setName(addSourceRequest.getName());
-        source.setType(addSourceRequest.getType());
+        source.setLink(sourceRequest.getLink());
+        source.setName(sourceRequest.getName());
+        source.setType(sourceRequest.getType());
 
         log.info("Saving source: {}", source);
         TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());

@@ -18,8 +18,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -46,10 +48,19 @@ public class AuthController {
                     .body("An error occurred during authentication: " + e.getMessage());
         }
 
-        UserDetails userDetails = userDetailService.loadUserByUsername(loginRequest.getIin());
-        String jwt = jwtTokenUtil.generateToken(userDetails);
+        User userDetails = (User) userDetailService.loadUserByUsername(loginRequest.getIin());
+        String accessToken = jwtTokenUtil.generateAccessToken(userDetails);
+        String refreshToken = jwtTokenUtil.generateRefreshToken(userDetails);
 
-        return ResponseEntity.ok().body(new JwtResponse(jwt));
+
+        JwtResponse jwtResponse = new JwtResponse();
+        jwtResponse.setAccess(accessToken);
+        jwtResponse.setRefresh(refreshToken);
+        jwtResponse.setIin(userDetails.getIin());
+        jwtResponse.setFio(userDetails.getName() + " " + userDetails.getSurname() + " " + userDetails.getFathername());
+        jwtResponse.setRole(userDetails.getRole().getName());
+
+        return ResponseEntity.ok().body(jwtResponse);
     }
 
     @PostMapping("/signup")
@@ -75,6 +86,32 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body("Invalid input: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refreshToken(@RequestHeader("Authorization") String refreshToken) {
+        if (refreshToken == null || !refreshToken.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid refresh token format");
+        }
+
+        refreshToken = refreshToken.substring(7);
+
+        if (!jwtTokenUtil.validateRefreshToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid or expired refresh token");
+        }
+
+        String username = jwtTokenUtil.extractUsername(refreshToken);
+        User userDetails = (User) userDetailService.loadUserByUsername(username);
+        String newAccessToken = jwtTokenUtil.generateAccessToken(userDetails);
+
+        JwtResponse jwtResponse = new JwtResponse();
+        jwtResponse.setAccess(newAccessToken);
+        jwtResponse.setRefresh(refreshToken);
+        jwtResponse.setIin(userDetails.getIin());
+        jwtResponse.setFio(userDetails.getName() + " " + userDetails.getSurname() + " " + userDetails.getFathername());
+        jwtResponse.setRole(userDetails.getRole().getName());
+
+        return ResponseEntity.ok(jwtResponse);
     }
 
 }

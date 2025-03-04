@@ -42,7 +42,11 @@ public class FilterResponse {
                 })
                 .toList();
 
-        this.newsWithScore = new PageImpl<>(newsWithScores, pageable, newsWithScores.size());
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), newsWithScores.size());
+        List<NewsWithScore> paginatedNewsWithScores = newsWithScores.subList(start, end);
+
+        this.newsWithScore = new PageImpl<>(paginatedNewsWithScores, pageable, newsWithScores.size());
     }
 
     @JsonIgnore

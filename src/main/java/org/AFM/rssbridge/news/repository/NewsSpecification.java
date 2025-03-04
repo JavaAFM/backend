@@ -10,7 +10,9 @@ public class NewsSpecification {
         return (root, query, criteriaBuilder) -> {
             var predicates = criteriaBuilder.conjunction();
 
-            if (filterRequest.getSource_name() != null && !filterRequest.getSource_name().isEmpty()) {
+            if (filterRequest.getSource_name() != null
+                    && !filterRequest.getSource_name().isEmpty()
+                    && !"allSources".equals(filterRequest.getSource_name())) {
                 predicates = criteriaBuilder.and(predicates,
                         criteriaBuilder.equal(root.get("source").get("name"), filterRequest.getSource_name()));
             }

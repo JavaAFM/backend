@@ -29,4 +29,6 @@ public class FilterRequest {
     private LocalDate to;
     @Nullable
     private boolean neg;
+    @Nullable
+    private boolean pos;
 }

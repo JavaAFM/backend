@@ -10,4 +10,6 @@ public class DocumentScore {
     private String text;
     @JsonProperty("is_negative")
     private boolean is_negative;
+    @JsonProperty("is_positive")
+    private boolean is_positive;
 }

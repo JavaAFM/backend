@@ -1,4 +1,4 @@
-package org.AFM.rssbridge.user.service;
+package org.AFM.rssbridge.user.service.impl;
 
 import lombok.AllArgsConstructor;
 import org.AFM.rssbridge.exception.NotFoundException;
@@ -6,6 +6,7 @@ import org.AFM.rssbridge.user.repository.RoleRepository;
 import org.AFM.rssbridge.user.repository.UserRepository;
 import org.AFM.rssbridge.user.model.Role;
 import org.AFM.rssbridge.user.model.User;
+import org.AFM.rssbridge.user.service.RSSUserDetailService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,4 +42,5 @@ public class RSSUserDetailsServiceImpl implements RSSUserDetailService {
     public Page<User> getAllUsers(Pageable pageable){
         return userRepository.findAll(pageable);
     }
+
 }

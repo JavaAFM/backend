@@ -22,4 +22,5 @@ public interface NewsService {
     PercentageScore predict(TagRequest request);
     List<News> allPredictedAnswers(TagRequest request) throws NotFoundException;
 
+    News findByTitle(String title) throws NotFoundException;
 }

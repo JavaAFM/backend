@@ -4,9 +4,10 @@ import lombok.AllArgsConstructor;
 import org.AFM.rssbridge.dto.request.FilterRequest;
 import org.AFM.rssbridge.dto.request.NewsRequest;
 import org.AFM.rssbridge.dto.request.TagRequest;
-import org.AFM.rssbridge.dto.response.DocumentScore;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.AFM.rssbridge.dto.response.FilterResponse;
-import org.AFM.rssbridge.dto.response.ModelResponse;
 import org.AFM.rssbridge.dto.response.PercentageScore;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.news.model.News;
@@ -16,10 +17,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @RestController

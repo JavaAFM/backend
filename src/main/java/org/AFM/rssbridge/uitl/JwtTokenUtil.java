@@ -26,6 +26,9 @@ public class JwtTokenUtil {
     @Value("${jwt.access.token.expiration}")
     private long accessTokenExpiration;
 
+    @Getter
+    @Value("${jwt.refresh.token.expiration}")
+    private long refreshTokenExpiration;
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtRequestFilter.class);
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -52,7 +55,7 @@ public class JwtTokenUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateAccessToken(UserDetails userDetails) {
         if (!(userDetails instanceof User user)) {
             throw new IllegalArgumentException("UserDetails must be an instance of User");
         }
@@ -82,5 +85,25 @@ public class JwtTokenUtil {
         LOGGER.warn("Expected username: {}", userDetails.getUsername());
         LOGGER.warn("Is token expired: {}", isTokenExpired(token));
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails, refreshTokenExpiration);
+    }
+    private String generateToken(Map<String, Object> claims, UserDetails userDetails, long expiration) {
+        String iin = ((User) userDetails).getIin();
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(iin)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
+                .compact();
+    }
+    public Boolean validateRefreshToken(String token) {
+        try {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
