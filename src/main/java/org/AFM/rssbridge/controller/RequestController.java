@@ -1,18 +1,14 @@
 package org.AFM.rssbridge.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.AFM.rssbridge.config.MyRawWSHandler;
-import org.AFM.rssbridge.dto.request.AddSourceRequest;
+import org.AFM.rssbridge.config.socket.MyRawWSHandler;
 import org.AFM.rssbridge.dto.request.AddSourceRequestWrapper;
 import org.AFM.rssbridge.dto.response.SourceRequestDto;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.user.model.SourceRequest;
 import org.AFM.rssbridge.user.service.RequestService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,19 +16,27 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RequestController {
     private final RequestService requestService;
-    private final MyRawWSHandler myRawWSHandler;
 
     @PostMapping("/addRequest")
     public ResponseEntity<String> createRequest(
             @RequestBody AddSourceRequestWrapper wrapper
             ) throws NotFoundException {
-        SourceRequest sourceRequest = requestService.createRequest(wrapper.getRequest(), wrapper.getIin());
-        myRawWSHandler.broadcastToAdmins(sourceRequest);
+        requestService.createRequest(wrapper.getRequest(), wrapper.getIin());
         return ResponseEntity.ok("Request has been delivered.");
     }
 
     @GetMapping("/allRequests")
     public ResponseEntity<List<SourceRequestDto>> allRequests(){
         return ResponseEntity.ok(requestService.allRequests());
+    }
+
+    @GetMapping("/myRequests")
+    private ResponseEntity<List<SourceRequest>> userRequests(
+            @RequestParam String iin
+    ){
+        System.out.println("I AM FAILING MY LORD.");
+        List<SourceRequest> requests = requestService.getAllRequestsFromUser(iin);
+        System.out.println("SUCCESS!!!!!!!!!");
+        return ResponseEntity.ok(requests);
     }
 }

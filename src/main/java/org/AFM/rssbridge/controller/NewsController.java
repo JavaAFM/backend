@@ -37,23 +37,13 @@ public class NewsController {
     @PostMapping("/getNewsBySource")
     private ResponseEntity<FilterResponse> getNewsBySource(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "50") int size,
+            @RequestParam(defaultValue = "10") int size,
             @RequestBody NewsRequest newsRequest
 
     ) throws NotFoundException {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(newsService.getAllNewsFromSource(pageable, newsRequest.getFilterRequest(),
                 newsRequest.getTagRequest()));
-    }
-
-    @PostMapping("/filter")
-    private ResponseEntity<Page<News>> filter(
-            @RequestBody FilterRequest filterRequest,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
-        Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(newsService.filter(filterRequest, pageable));
     }
 
     @GetMapping("/lastNews")
@@ -73,22 +63,6 @@ public class NewsController {
     ) {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(newsService.lastNewsOfSource(source, pageable));
-    }
-
-    @PostMapping("/predict")
-    public ResponseEntity<PercentageScore> predict(
-            @RequestBody TagRequest request
-    ) {
-        PercentageScore percentageScore = newsService.predict(request);
-        return percentageScore != null ? ResponseEntity.ok(percentageScore) : ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/allPredictedAnswers")
-    public ResponseEntity<List<News>> allPredictedAnswers(
-            @RequestBody TagRequest request
-    ) throws NotFoundException {
-        List<News> selectedNews = newsService.allPredictedAnswers(request);
-        return !selectedNews.isEmpty() ? ResponseEntity.ok(selectedNews) : ResponseEntity.noContent().build();
     }
 }
 

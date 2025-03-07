@@ -45,11 +45,13 @@ public class NewsRepoImpl implements NewsRepo {
                 .filter(news -> filterByDateRange(news, filterRequest.getFrom(), filterRequest.getTo()))
                 .collect(Collectors.toList());
 
+        filteredNews.sort(News::compareTo);
+
         int start = (int) pageable.getOffset();
         int end = Math.min(start + pageable.getPageSize(), filteredNews.size());
-        List<News> pagedNews = filteredNews.subList(start, end);
 
-        return new PageImpl<>(pagedNews, pageable, filteredNews.size());
+        return new PageImpl<>(filteredNews.subList(start, end), pageable, filteredNews.size());
+
     }
 
     private boolean filterByDateRange(News news, LocalDate from, LocalDate to) {

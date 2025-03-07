@@ -2,7 +2,6 @@ package org.AFM.rssbridge.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.AFM.rssbridge.config.MyRawWSHandler;
 import org.AFM.rssbridge.dto.request.DecisionRequest;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.news.service.SourceService;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final RequestService requestService;
     private final SourceService sourceService;
-    private final MyRawWSHandler myRawWSHandler;
 
     @PutMapping("/decision")
     public ResponseEntity<String> makeDecision(
@@ -33,16 +31,11 @@ public class AdminController {
 
         requestService.save(sourceRequest);
 
-
-        String decisionMessage = "Your request (ID: " + sourceRequest.getId() + ") was "
-                + decisionRequest.getStatus() + ". Reason: " + decisionRequest.getReason();
-
         if (SourceStatus.valueOf(decisionRequest.getStatus()) == SourceStatus.ACCEPTED) {
             log.info("Adding new source...");
             sourceService.addNewsSource(sourceRequest);
         }
         log.info("Sending to user...");
-        myRawWSHandler.broadcastToUser(sourceRequest, decisionMessage);
         return ResponseEntity.ok("Decision was made.");
     }
 }

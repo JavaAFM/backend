@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,9 +48,9 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login", "/signup", "/allSources", "/allMainTags", "/filterParams").permitAll()
-                        .requestMatchers("/allUsers", "/decision", "/allRequests").hasAuthority("admin")
-                        .requestMatchers("/ws/**").permitAll()
+                        .requestMatchers("/allUsers", "/decision", "/allRequests", "/promote").hasAuthority("admin")
                         .requestMatchers("/allNews", "/filter","/getNewsBySource", "/predict", "/allPredictedAnswers", "/addRequest").hasAnyAuthority("user", "admin")
+                        .requestMatchers("/ws").permitAll()
                         .anyRequest().permitAll()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)

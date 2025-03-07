@@ -13,7 +13,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "news")
-public class News {
+public class News implements Comparable<News>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,4 +43,8 @@ public class News {
 
     @Column(name = "created_at")
     private LocalDateTime publicationDate;
+    @Override
+    public int compareTo(News other) {
+        return other.publicationDate.compareTo(this.publicationDate);
+    }
 }

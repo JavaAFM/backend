@@ -13,4 +13,5 @@ public class SourceRequestDto {
     private LocalDateTime publishedDate;
     private String status;
     private String iin;
+    private String fio;
 }

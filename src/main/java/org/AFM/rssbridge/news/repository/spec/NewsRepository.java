@@ -1,5 +1,6 @@
 package org.AFM.rssbridge.news.repository.spec;
 
+import org.AFM.rssbridge.news.model.MoodyNews;
 import org.AFM.rssbridge.news.model.News;
 import org.AFM.rssbridge.news.model.Source;
 import org.AFM.rssbridge.news.repository.NewsRepo;
@@ -15,11 +16,8 @@ import java.util.Optional;
 
 @Repository
 public interface NewsRepository extends JpaRepository<News, Long>, JpaSpecificationExecutor<News>, NewsRepo {
-    @Query("SELECT n FROM News n")
+    @Query("SELECT n FROM News n ORDER BY n.publicationDate DESC")
     Page<News> findAll(Pageable pageable);
-
-    @Query("SELECT n FROM News n WHERE n.source = :source")
-    Page<News> getNewsBySource(@Param("source") Source source, Pageable pageable);
 
     @Query("SELECT n FROM News n ORDER BY n.publicationDate DESC")
     Page<News> getLastNews(Pageable pageable);
@@ -29,5 +27,4 @@ public interface NewsRepository extends JpaRepository<News, Long>, JpaSpecificat
     Optional<News> getNewsById(Long id);
 
     Optional<News> getNewsByTitle(String title);
-
 }

@@ -17,6 +17,7 @@ public class RequestMapperImpl implements RequestMapper {
         SourceRequestDto sourceRequestDto = new SourceRequestDto();
         sourceRequestDto.setId(request.getId());
         sourceRequestDto.setIin(request.getUser().getIin());
+        sourceRequestDto.setFio(request.getUser().getName() + " " + request.getUser().getSurname() + " " + request.getUser().getFathername());
         sourceRequestDto.setStatus(String.valueOf(request.getStatus()));
         sourceRequestDto.setLink(request.getLink());
         sourceRequestDto.setReason(request.getReason());

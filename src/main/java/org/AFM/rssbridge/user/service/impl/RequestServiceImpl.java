@@ -1,6 +1,8 @@
 package org.AFM.rssbridge.user.service.impl;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.AFM.rssbridge.dto.request.AddSourceRequest;
 import org.AFM.rssbridge.dto.response.SourceRequestDto;
 import org.AFM.rssbridge.exception.NotFoundException;
@@ -15,12 +17,24 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@RequiredArgsConstructor
+@Setter
 public class RequestServiceImpl implements RequestService {
-    private final RequestRepository requestRepository;
-    private final UserRepository userRepository;
-    private final RequestMapper requestMapper;
 
+    private  RequestRepository requestRepository;
+    private  UserRepository userRepository;
+    private  RequestMapper requestMapper;
+
+
+    public RequestServiceImpl(RequestRepository requestRepository, UserRepository userRepository, RequestMapper requestMapper) {
+        this.requestRepository = requestRepository;
+        this.userRepository = userRepository;
+        this.requestMapper = requestMapper;
+    }
+
+    @PostConstruct
+    public void init() {
+        System.out.println("RequestServiceImpl initialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+    }
     @Override
     public List<SourceRequest> getAllRequestsFromUser(String iin) {
         return requestRepository.getAddSourceRequestsByUserIin(iin);

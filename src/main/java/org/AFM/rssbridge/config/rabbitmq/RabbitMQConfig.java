@@ -1,4 +1,4 @@
-package org.AFM.rssbridge.config;
+package org.AFM.rssbridge.config.rabbitmq;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;

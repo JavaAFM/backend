@@ -49,7 +49,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             logger.warn("User authenticated: " + username);
             logger.warn("Authorities: " + userDetails.getAuthorities());
 
-            if (jwtTokenUtil.validateToken(jwt, userDetails)) {
+            if (jwtTokenUtil.validateAuthToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));

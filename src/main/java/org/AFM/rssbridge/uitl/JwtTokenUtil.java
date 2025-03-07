@@ -79,7 +79,7 @@ public class JwtTokenUtil {
                 compact();
     }
 
-    public Boolean validateToken(String token, UserDetails userDetails) {
+    public Boolean validateAuthToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         LOGGER.warn("Extracted username: {}", username);
         LOGGER.warn("Expected username: {}", userDetails.getUsername());

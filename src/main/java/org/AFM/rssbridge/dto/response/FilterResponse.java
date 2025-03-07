@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.AFM.rssbridge.news.model.News;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 
@@ -41,12 +42,10 @@ public class FilterResponse {
                     return nws;
                 })
                 .toList();
+        this.newsWithScore = new PageImpl<>(newsWithScores, pageable, news.size());
 
-        int start = (int) pageable.getOffset();
-        int end = Math.min((start + pageable.getPageSize()), newsWithScores.size());
-        List<NewsWithScore> paginatedNewsWithScores = newsWithScores.subList(start, end);
 
-        this.newsWithScore = new PageImpl<>(paginatedNewsWithScores, pageable, newsWithScores.size());
+
     }
 
     @JsonIgnore

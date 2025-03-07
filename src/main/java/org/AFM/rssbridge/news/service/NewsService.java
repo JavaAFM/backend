@@ -15,12 +15,8 @@ public interface NewsService {
     Page<News> getAllNews(Pageable pageable);
     FilterResponse getAllNewsFromSource(Pageable pageable,
                                         FilterRequest filterRequest, TagRequest tagRequest) throws NotFoundException;
-    Page<News> filter(FilterRequest filterRequest, Pageable pageable);
     Page<News> lastNews(Pageable pageable);
     Page<News> lastNewsOfSource(String source, Pageable pageable);
     News getNewsById(Long id) throws NotFoundException;
-    PercentageScore predict(TagRequest request);
-    List<News> allPredictedAnswers(TagRequest request) throws NotFoundException;
-
     News findByTitle(String title) throws NotFoundException;
 }

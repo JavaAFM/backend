@@ -41,6 +41,7 @@ public class NewsSpecification {
                 predicates = criteriaBuilder.and(predicates,
                         criteriaBuilder.lessThanOrEqualTo(root.get("publicationDate"), filterRequest.getTo().atTime(23, 59, 59)));
             }
+            query.orderBy(criteriaBuilder.desc(root.get("publicationDate")));
 
             return predicates;
         };
