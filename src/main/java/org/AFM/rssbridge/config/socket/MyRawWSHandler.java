@@ -3,7 +3,6 @@ package org.AFM.rssbridge.config.socket;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
-import org.AFM.rssbridge.news.model.MoodyNews;
 import org.AFM.rssbridge.news.model.News;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;

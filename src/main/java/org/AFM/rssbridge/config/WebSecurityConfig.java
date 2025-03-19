@@ -2,7 +2,7 @@ package org.AFM.rssbridge.config;
 
 
 import org.AFM.rssbridge.user.service.impl.RSSUserDetailsServiceImpl;
-import org.AFM.rssbridge.uitl.JwtRequestFilter;
+import org.AFM.rssbridge.util.JwtRequestFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.socket.EnableWebSocketSecurity;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,11 +46,12 @@ public class WebSecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/login", "/signup", "/allSources", "/allMainTags", "/filterParams").permitAll()
                         .requestMatchers("/allUsers", "/decision", "/allRequests", "/promote").hasAuthority("admin")
-                        .requestMatchers("/allNews", "/filter","/getNewsBySource", "/predict", "/allPredictedAnswers", "/addRequest").hasAnyAuthority("user", "admin")
+                        .requestMatchers("/allNews","/getNewsBySource","/addRequest").hasAnyAuthority("user", "admin")
                         .requestMatchers("/ws").permitAll()
-                        .anyRequest().permitAll()
+                        .anyRequest().authenticated()
                 )
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class)
                 .userDetailsService(userDetailsService)

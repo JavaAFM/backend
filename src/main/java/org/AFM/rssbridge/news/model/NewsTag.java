@@ -2,12 +2,10 @@ package org.AFM.rssbridge.news.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @ToString(exclude = {"news"})
 @Entity
 @Table(name = "news_tags")

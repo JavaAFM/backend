@@ -1,14 +1,8 @@
 package org.AFM.rssbridge.controller;
 
 import lombok.AllArgsConstructor;
-import org.AFM.rssbridge.dto.request.FilterRequest;
 import org.AFM.rssbridge.dto.request.NewsRequest;
-import org.AFM.rssbridge.dto.request.TagRequest;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.AFM.rssbridge.dto.response.FilterResponse;
-import org.AFM.rssbridge.dto.response.PercentageScore;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.news.model.News;
 import org.AFM.rssbridge.news.service.NewsService;
@@ -18,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @AllArgsConstructor

@@ -1,4 +1,4 @@
-package org.AFM.rssbridge.uitl;
+package org.AFM.rssbridge.util;
 
 import org.springframework.stereotype.Component;
 
@@ -12,14 +12,6 @@ public class Validator {
 
         Pattern pattern = Pattern.compile(regExpn, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(password);
-
-        return matcher.matches();
-    }
-    public boolean isValidEmail(String email){
-        String regexPattern = "^(.+)@(\\S+)$";
-
-        Pattern pattern = Pattern.compile(regexPattern);
-        Matcher matcher = pattern.matcher(email);
 
         return matcher.matches();
     }

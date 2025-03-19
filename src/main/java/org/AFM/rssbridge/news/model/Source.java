@@ -1,12 +1,10 @@
 package org.AFM.rssbridge.news.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
+@Data
 @ToString
 @Entity
 @Table(name = "sources")

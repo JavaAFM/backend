@@ -25,8 +25,6 @@ public class UserController {
     private final SourceService sourceService;
     private final NewsTagService newsTagService;
 
-
-
     @GetMapping("/allUsers")
     @PreAuthorize("hasAuthority('admin')")
     public ResponseEntity<Page<User>> getAllUsers(

@@ -1,7 +1,5 @@
 package org.AFM.rssbridge.user.service.impl;
 
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.AFM.rssbridge.dto.request.AddSourceRequest;
 import org.AFM.rssbridge.dto.response.SourceRequestDto;
@@ -29,11 +27,6 @@ public class RequestServiceImpl implements RequestService {
         this.requestRepository = requestRepository;
         this.userRepository = userRepository;
         this.requestMapper = requestMapper;
-    }
-
-    @PostConstruct
-    public void init() {
-        System.out.println("RequestServiceImpl initialized!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
     }
     @Override
     public List<SourceRequest> getAllRequestsFromUser(String iin) {

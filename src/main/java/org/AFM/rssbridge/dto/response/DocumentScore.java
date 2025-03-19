@@ -12,4 +12,5 @@ public class DocumentScore {
     private boolean is_negative;
     @JsonProperty("is_positive")
     private boolean is_positive;
+    private double sentiment_score;
 }

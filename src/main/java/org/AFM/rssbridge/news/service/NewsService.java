@@ -17,6 +17,5 @@ public interface NewsService {
                                         FilterRequest filterRequest, TagRequest tagRequest) throws NotFoundException;
     Page<News> lastNews(Pageable pageable);
     Page<News> lastNewsOfSource(String source, Pageable pageable);
-    News getNewsById(Long id) throws NotFoundException;
     News findByTitle(String title) throws NotFoundException;
 }

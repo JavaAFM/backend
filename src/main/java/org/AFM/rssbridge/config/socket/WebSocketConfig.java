@@ -10,14 +10,11 @@ import org.springframework.web.socket.config.annotation.*;
 @EnableWebSocket
 @RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketConfigurer {
-
-    private final AuthHandshakeInterceptor authHandshakeInterceptor;
     private final MyRawWSHandler myRawWSHandler;
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         log.info("✅ Registering WebSocket handler...");
         registry.addHandler(myRawWSHandler, "/ws")
-                .setAllowedOrigins("*")
-                .addInterceptors(authHandshakeInterceptor);
+                .setAllowedOrigins("*");
     }
 }

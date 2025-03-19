@@ -1,4 +1,4 @@
-package org.AFM.rssbridge.uitl;
+package org.AFM.rssbridge.util;
 
 
 import jakarta.servlet.FilterChain;
@@ -55,10 +55,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 LOGGER.warn("Authentication set for user: {}", userDetails.getUsername());
-            }
-
-            else{
-                LOGGER.warn("I stuck here, help me my lord!");
             }
         }
 

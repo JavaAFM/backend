@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final RequestService requestService;
     private final SourceService sourceService;
-
     @PutMapping("/decision")
     public ResponseEntity<String> makeDecision(
             @RequestBody DecisionRequest decisionRequest
@@ -35,7 +34,6 @@ public class AdminController {
             log.info("Adding new source...");
             sourceService.addNewsSource(sourceRequest);
         }
-        log.info("Sending to user...");
         return ResponseEntity.ok("Decision was made.");
     }
 }

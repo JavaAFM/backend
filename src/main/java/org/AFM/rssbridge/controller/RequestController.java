@@ -34,9 +34,7 @@ public class RequestController {
     private ResponseEntity<List<SourceRequest>> userRequests(
             @RequestParam String iin
     ){
-        System.out.println("I AM FAILING MY LORD.");
         List<SourceRequest> requests = requestService.getAllRequestsFromUser(iin);
-        System.out.println("SUCCESS!!!!!!!!!");
         return ResponseEntity.ok(requests);
     }
 }

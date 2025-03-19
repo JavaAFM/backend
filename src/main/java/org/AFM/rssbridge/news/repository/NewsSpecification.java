@@ -16,23 +16,6 @@ public class NewsSpecification {
                 predicates = criteriaBuilder.and(predicates,
                         criteriaBuilder.equal(root.get("source").get("name"), filterRequest.getSource_name()));
             }
-
-            if (filterRequest.getSource_type() != null && !filterRequest.getSource_type().isEmpty()) {
-                predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.equal(root.get("source").get("type"), filterRequest.getSource_type()));
-            }
-
-            if (filterRequest.getTitle() != null && !filterRequest.getTitle().isEmpty()) {
-                predicates = criteriaBuilder.and(predicates,
-                        criteriaBuilder.like(criteriaBuilder.lower(root.get("title")), "%" + filterRequest.getTitle().toLowerCase() + "%"));
-            }
-
-            if (filterRequest.getTags() != null && !filterRequest.getTags().isEmpty()) {
-                Join<Object, Object> tagJoin = root.join("tags");
-                predicates = criteriaBuilder.and(predicates,
-                        tagJoin.get("tag").in(filterRequest.getTags()));
-            }
-
             if (filterRequest.getFrom() != null) {
                 predicates = criteriaBuilder.and(predicates,
                         criteriaBuilder.greaterThanOrEqualTo(root.get("publicationDate"), filterRequest.getFrom().atStartOfDay()));

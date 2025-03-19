@@ -1,15 +1,13 @@
 package org.AFM.rssbridge.news.model;
 
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Data;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+@Data
 @ToString
 @Entity
 @Table(name = "news")
@@ -43,6 +41,13 @@ public class News implements Comparable<News>{
 
     @Column(name = "created_at")
     private LocalDateTime publicationDate;
+
+    @Column(name = "pre_is_negative")
+    private Boolean pre_is_negative;
+
+    @Column(name = "pre_is_positive")
+    private Boolean pre_is_positive;
+
     @Override
     public int compareTo(News other) {
         return other.publicationDate.compareTo(this.publicationDate);

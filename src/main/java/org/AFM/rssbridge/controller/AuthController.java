@@ -8,8 +8,8 @@ import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.user.model.User;
 import org.AFM.rssbridge.user.service.RSSUserDetailService;
 
-import org.AFM.rssbridge.uitl.JwtRequestFilter;
-import org.AFM.rssbridge.uitl.JwtTokenUtil;
+import org.AFM.rssbridge.util.JwtRequestFilter;
+import org.AFM.rssbridge.util.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;

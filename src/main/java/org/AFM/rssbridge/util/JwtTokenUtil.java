@@ -1,4 +1,4 @@
-package org.AFM.rssbridge.uitl;
+package org.AFM.rssbridge.util;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

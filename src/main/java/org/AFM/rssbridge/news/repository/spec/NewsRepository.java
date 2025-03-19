@@ -1,8 +1,6 @@
 package org.AFM.rssbridge.news.repository.spec;
 
-import org.AFM.rssbridge.news.model.MoodyNews;
 import org.AFM.rssbridge.news.model.News;
-import org.AFM.rssbridge.news.model.Source;
 import org.AFM.rssbridge.news.repository.NewsRepo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

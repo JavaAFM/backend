@@ -4,7 +4,6 @@ import org.AFM.rssbridge.dto.request.AddSourceRequest;
 import org.AFM.rssbridge.dto.response.SourceRequestDto;
 import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.user.model.SourceRequest;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
