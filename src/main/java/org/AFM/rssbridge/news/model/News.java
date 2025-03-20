@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -11,7 +12,7 @@ import java.util.List;
 @ToString
 @Entity
 @Table(name = "news")
-public class News implements Comparable<News>{
+public class News implements Comparable<News>, Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

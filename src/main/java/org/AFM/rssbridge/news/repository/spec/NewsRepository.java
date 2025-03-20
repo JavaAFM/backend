@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,7 +23,13 @@ public interface NewsRepository extends JpaRepository<News, Long>, JpaSpecificat
 
     @Query("SELECT n FROM News n WHERE n.source.name = :source ORDER BY n.publicationDate DESC")
     Page<News> getLastNewsOfSource(@Param("source") String source, Pageable pageable);
-    Optional<News> getNewsById(Long id);
-
     Optional<News> getNewsByTitle(String title);
+    @Query("SELECT n FROM News n WHERE n.pre_is_negative = true ORDER BY n.publicationDate DESC")
+    List<News> findNegativeNews(Pageable pageable);
+
+    @Query("SELECT n FROM News n WHERE n.pre_is_positive = true ORDER BY n.publicationDate DESC")
+    List<News> findPositiveNews(Pageable pageable);
+
+    @Query("SELECT n FROM News n WHERE n.id IN :ids ORDER BY n.publicationDate DESC")
+    List<News> findNewsByIds(@Param("ids") List<Long> ids);
 }
