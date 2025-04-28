@@ -64,8 +64,9 @@ public class NewsConsumer {
                             if (notifications != null && notifications.length > 0) {
                                 log.info("Found {} notification(s): {}", notifications.length, Arrays.toString(notifications));
                                 for (PGNotification notification : notifications) {
-                                    String newsTitle = notification.getParameter();
-                                    processNews(newsTitle);
+                                    String newsIdStr = notification.getParameter();
+                                    Long newsId = Long.parseLong(newsIdStr);
+                                    processNews(newsId);
                                 }
                             }
                         } catch (Exception innerEx) {
@@ -99,9 +100,9 @@ public class NewsConsumer {
         return DriverManager.getConnection(dbUrl, dbUser, dbPassword);
     }
 
-    private void processNews(String newsTitle) throws NotFoundException {
-        log.info("Processing negative news: {}", newsTitle);
-        News news = newsService.findByTitle(newsTitle);
+    private void processNews(Long id) throws NotFoundException {
+        log.info("Processing negative news: {}", id);
+        News news = newsService.findById(id);
         log.info("Fetched news: {}", news);
         if (news.getPre_is_negative()) {
             log.info("Sending news to websocket...");

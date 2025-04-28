@@ -190,7 +190,7 @@ public class NewsServiceImpl implements NewsService {
             LOGGER.error("Received null response from FastAPI predict endpoint");
             return new DocumentScore[0];
         }
-        LOGGER.info("Received response from FastAPI: {}", Arrays.toString(modelResponse.getBody()));
+        LOGGER.info("Received response from FastAPI: {}", modelResponse.getBody());
         return modelResponse.getBody();
     }
     private List<News> getNewsSentiment(DocumentScore[] documentScores, FilterRequest filterRequest) {
@@ -221,5 +221,10 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public News findByTitle(String title) throws NotFoundException {
         return newsRepository.getNewsByTitle(title).orElseThrow(() -> new NotFoundException("News not found.."));
+    }
+
+    @Override
+    public News findById(Long id) throws NotFoundException {
+        return newsRepository.findById(id).orElseThrow(()->new NotFoundException("News not found..."));
     }
 }

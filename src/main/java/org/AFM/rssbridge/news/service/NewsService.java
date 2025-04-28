@@ -18,4 +18,5 @@ public interface NewsService {
     Page<News> lastNews(Pageable pageable);
     Page<News> lastNewsOfSource(String source, Pageable pageable);
     News findByTitle(String title) throws NotFoundException;
+    News findById(Long id) throws NotFoundException;
 }
