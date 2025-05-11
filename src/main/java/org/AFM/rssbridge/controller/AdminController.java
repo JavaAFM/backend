@@ -7,11 +7,13 @@ import org.AFM.rssbridge.exception.NotFoundException;
 import org.AFM.rssbridge.news.service.SourceService;
 import org.AFM.rssbridge.user.model.SourceRequest;
 import org.AFM.rssbridge.user.model.SourceStatus;
+import org.AFM.rssbridge.user.model.UserLog;
 import org.AFM.rssbridge.user.service.RequestService;
+import org.AFM.rssbridge.user.service.impl.UserLogServiceImpl;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AdminController {
     private final RequestService requestService;
     private final SourceService sourceService;
+    private final UserLogServiceImpl userLogService;
     @PutMapping("/decision")
     public ResponseEntity<String> makeDecision(
             @RequestBody DecisionRequest decisionRequest
@@ -36,4 +39,32 @@ public class AdminController {
         }
         return ResponseEntity.ok("Decision was made.");
     }
-}
+    @PostMapping("/logs")
+    public String logAction(@RequestParam Long userId, @RequestParam String action, @RequestParam String details) {
+        userLogService.logAction(userId, action, details);
+        return "Log created successfully";
+    }
+
+    /**
+     * Get logs by user ID.
+     */
+    @GetMapping("/logs/user/{userId}")
+    public List<UserLog> getLogsByUser(@PathVariable Long userId) {
+        return userLogService.getLogsByUser(userId);
+    }
+
+    /**
+     * Get logs by action.
+     */
+    @GetMapping("/logs/action/{action}")
+    public List<UserLog> getLogsByAction(@PathVariable String action) {
+        return userLogService.getLogsByAction(action);
+    }
+
+    /**
+     * Get logs by user ID and action.
+     */
+    @GetMapping("/logs/user/{userId}/action/{action}")
+    public List<UserLog> getLogsByUserAndAction(@PathVariable Long userId, @PathVariable String action) {
+        return userLogService.getLogsByUserAndAction(userId, action);
+}}
