@@ -45,25 +45,18 @@ public class AdminController {
         return "Log created successfully";
     }
 
-    /**
-     * Get logs by user ID.
-     */
+
     @GetMapping("/logs/user/{userId}")
     public List<UserLog> getLogsByUser(@PathVariable Long userId) {
         return userLogService.getLogsByUser(userId);
     }
 
-    /**
-     * Get logs by action.
-     */
     @GetMapping("/logs/action/{action}")
     public List<UserLog> getLogsByAction(@PathVariable String action) {
         return userLogService.getLogsByAction(action);
     }
 
-    /**
-     * Get logs by user ID and action.
-     */
+
     @GetMapping("/logs/user/{userId}/action/{action}")
     public List<UserLog> getLogsByUserAndAction(@PathVariable Long userId, @PathVariable String action) {
         return userLogService.getLogsByUserAndAction(userId, action);
